@@ -1,0 +1,5 @@
+#Secrets must be secret! :v
+secret.json
+venv/
+venv/*
+.idea
