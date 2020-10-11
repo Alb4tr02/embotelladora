@@ -3,5 +3,6 @@ from django.contrib import admin
 from . import views
 
 urlpatterns = [
-    path('tony/', views.UserCreateView.as_view()),
+    path('create/', views.UserCreateView.as_view()),
+    path('login/', views.CustomAuthToken.as_view()),
 ]
