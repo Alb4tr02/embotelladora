@@ -21,9 +21,11 @@ BASE_DIR = Path(__file__).ancestor(3)
 # See https://docs.djangoproject.com/en/3.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-with open("secret.json") as f:
-    secret = json.loads(f.read())
-
+try:
+    with open("secret.json") as f:
+        secret = json.loads(f.read())
+except:
+    pass
 
 def get_secret(secret_name, secrets=secret):
 
