@@ -18,10 +18,10 @@ class User(AbstractBaseUser, PermissionsMixin):
     )
     username = models.CharField(max_length=15, unique=True)
     email = models.EmailField()
-    nombres = models.CharField(max_length=30, blank=True)
-    apellidos = models.CharField(max_length=30, blank=True)
-    genero = models.CharField(max_length=1, choices=GENDER_CHOICES, blank=True)
-    rol = models.CharField(max_length=1, choices=ROL_CHOICES, blank=False)
+    nombres = models.CharField(max_length=30)
+    apellidos = models.CharField(max_length=30)
+    genero = models.CharField(max_length=1, choices=GENDER_CHOICES)
+    rol = models.CharField(max_length=1, choices=ROL_CHOICES)
 
     is_staff = models.BooleanField(default=False)
 
