@@ -9,5 +9,5 @@ DEBUG = True
 DATABASES = {
     'default': dj_database_url.config(conn_max_age=600, ssl_require=True)
 }
-SECRET_KEY= 'hlzh$&d2dt%pp2=v+2rl09khxlh(l2)tlknk=ct$oaiu@e)h8_'
+SECRET_KEY= os.getenv('SECRET_KEY')
 django_on_heroku.settings(locals())
