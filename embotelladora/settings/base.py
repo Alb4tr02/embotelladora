@@ -34,7 +34,7 @@ def get_secret(secret_name, secrets=secret):
         raise ImproperlyConfigured(msg)
 
 
-SECRET_KEY = 'hlzh$&d2dt%pp2=v+2rl09khxlh(l2)tlknk=ct$oaiu@e)h8_'
+SECRET_KEY = get_secret('SECRET_KEY')
 
 
 
@@ -50,9 +50,13 @@ DJANGO_APPS = (
     # local apps
 )
 
-LOCAL_APPS = ()
+LOCAL_APPS = (
+    'applications.users',
+)
 
-THIRD_PARTY_APPS = ()
+THIRD_PARTY_APPS = (
+    'rest_framework',
+)
 
 INSTALLED_APPS = DJANGO_APPS + LOCAL_APPS + THIRD_PARTY_APPS
 
@@ -105,6 +109,7 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+AUTH_USER_MODEL = 'users.User'
 
 # Internationalization
 # https://docs.djangoproject.com/en/3.1/topics/i18n/
