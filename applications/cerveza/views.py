@@ -3,6 +3,7 @@ from django.shortcuts import render
 from rest_framework.generics import (
     ListAPIView,
     CreateAPIView,
+    RetrieveAPIView,
 )
 
 from .models import CervezaModel
@@ -18,15 +19,18 @@ class CervezaListApiView(ListAPIView):
         return CervezaModel.objects.all()
 
 
-class CervezaDetailApiView(ListAPIView):
+class CervezaListApiViewByMaker(ListAPIView):
 
     serializer_class = CervezaSerializer
 
     def get_queryset(self):
-        nombre = self.kwargs.get('nombre')
-        return CervezaModel.objects.filter(
-            nombre__iexact=nombre
-        )
+        return self.request.user.cervezas
+
+
+class CervezaDetailApiView(RetrieveAPIView):
+
+    queryset = CervezaModel.objects.all()
+    serializer_class = CervezaSerializer
 
 
 class CervezaCreateApiView(CreateAPIView):

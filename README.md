@@ -146,6 +146,8 @@ Mediante el método POST se envía un Json con el siguiente formato:
 | alcohol | POST | Porcentaje de alcohol de la cerveza |
 | fermentacion | POST | Tipo de fermentación de la cerveza, "A" para Ale, "L" para Larger y "H" para Híbrida |
 | nombre | POST | Nombre de la cerveza |
+
+*Nota: Para registrar cervezas se debe estar logueado como fabricante
                                                                                                  
 ##### Respuesta                                                                                                                                                                                                      
 En caso de que la petición sea exitosa se envía un json con el formato anterior:
