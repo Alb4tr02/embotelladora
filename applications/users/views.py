@@ -14,13 +14,23 @@ from .models import User
 
 class UserCreateView(CreateAPIView):
 
+    permission_classes = ()
     serializer_class = UserSerializer
+
+    def create(self, request, *args, **kwargs):
+        response = super().create(request, *args, **kwargs)
+        return Response({
+            'email': response.data.get('email'),
+            'username': response.data.get('username')
+        })
+
 
 class CustomAuthToken(ObtainAuthToken):
 
+    permission_classes = ()
     serializer_class = TokenSerializer
+
     def post(self, request, *args, **kwargs):
-        print("entra")
         serializer = self.serializer_class(data=request.data,
                                            context={'request': request})
         serializer.is_valid(raise_exception=True)

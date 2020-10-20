@@ -1,5 +1,7 @@
 from django.db import models
 
+from applications.users.models import User
+
 # Create your models here.
 class CervezaModel(models.Model):
 
@@ -19,6 +21,7 @@ class CervezaModel(models.Model):
     alcohol = models.FloatField()
     fermentacion = models.CharField(max_length=1, choices=FERMENTACION_CHOICES)
     nombre = models.CharField(max_length=20, unique=True)
+    fabricante = models.ForeignKey(User, related_name='cervezas', on_delete=models.CASCADE, null=False)
 
     def __str__(self):
         return self.nombre
