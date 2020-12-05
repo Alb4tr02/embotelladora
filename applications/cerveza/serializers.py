@@ -12,7 +12,7 @@ class CervezaSerializer(serializers.ModelSerializer):
             'alcohol',
             'fermentacion',
             'nombre',
-                  )
+            'id')
 
     def create(self, validated_data):
         fields = CervezaSerializer.Meta.fields
