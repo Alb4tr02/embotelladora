@@ -7,7 +7,7 @@ import os
 DEBUG = True
 
 DATABASES = {
-    'default': dj_database_url.config(conn_max_age=600, ssl_require=True)
+    'default': dj_database_url.config(default=os.environ['DATABASE_URL'])
 }
 SECRET_KEY= os.getenv('SECRET_KEY')
 django_on_heroku.settings(locals())
