@@ -19,4 +19,4 @@ DATABASES = {
 
 SECRET_KEY = os.getenv('SECRET_KEY')
 
-django_on_heroku.settings(locals())
+#django_on_heroku.settings(locals())
