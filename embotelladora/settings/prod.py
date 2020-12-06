@@ -16,5 +16,6 @@ MEDIA_ROOT = BASE_DIR.child('media')
 DATABASES = {
     'default': dj_database_url.config(default=os.environ['DATABASE_URL'])
 }
+
 SECRET_KEY = os.getenv('SECRET_KEY')
 django_on_heroku.settings(locals())
