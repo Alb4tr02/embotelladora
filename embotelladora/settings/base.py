@@ -34,7 +34,7 @@ def get_secret(secret_name, secrets=secret):
         return secrets[secret_name]
     except:
         msg = f'la varaible {secret_name} no existe'
-        raise ImproperlyConfigured(msg)
+        #raise ImproperlyConfigured(msg)
 
 
 
