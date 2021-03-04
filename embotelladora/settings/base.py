@@ -239,7 +239,7 @@ SAML_ATTRIBUTE_MAPPING = {
 #Token auth
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
-        'djangosaml2.backends.Saml2Backend',
+        #'djangosaml2.backends.Saml2Backend',
         'rest_framework.authentication.TokenAuthentication',
     ],
     'DEFAULT_PERMISSION_CLASSES': [
