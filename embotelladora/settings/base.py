@@ -230,7 +230,7 @@ SAML_CONFIG = {
   }
 SAML_DJANGO_USER_MAIN_ATTRIBUTE = 'email'
 SAML_CREATE_UNKNOWN_USER = True
-ACS_DEFAULT_REDIRECT_URL = reverse_lazy('admin')
+ACS_DEFAULT_REDIRECT_URL = reverse_lazy('pedido')
 SAML_ATTRIBUTE_MAPPING = {
     'uid': ('username', ),
     'mail': ('email', ),
