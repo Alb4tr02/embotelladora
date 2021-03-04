@@ -11,6 +11,10 @@ https://docs.djangoproject.com/en/3.1/ref/settings/
 """
 from django.core.exceptions import ImproperlyConfigured
 import json
+import saml2
+import saml2.saml
+from django.urls import reverse_lazy
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 from unipath import Path
 BASE_DIR = Path(__file__).ancestor(3)
@@ -62,7 +66,7 @@ THIRD_PARTY_APPS = (
     'rest_framework',
     'rest_framework.authtoken',
     'corsheaders',
-    'django_saml2_auth',
+    'djangosaml2', #SAML
 )
 
 INSTALLED_APPS = DJANGO_APPS + LOCAL_APPS + THIRD_PARTY_APPS
@@ -76,6 +80,7 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'corsheaders.middleware.CorsMiddleware',
+    'djangosaml2.middleware.SamlSessionMiddleware', #SAML
 ]
 
 ROOT_URLCONF = 'embotelladora.urls'
@@ -97,36 +102,6 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'embotelladora.wsgi.application'
-SAML2_AUTH = {
-    # Metadata is required, choose either remote url or local file path
-    'METADATA_AUTO_CONF_URL': 'https://grovity.my.salesforce.com/.well-known/samlidp.xml',
-    'METADATA_LOCAL_FILE_PATH': '',
-
-    # Optional settings below
-    'DEFAULT_NEXT_URL': '/admin',  # Custom target redirect URL after the user get logged in. Default to /admin if not set. This setting will be overwritten if you have parameter ?next= specificed in the login URL.
-    'CREATE_USER': 'TRUE', # Create a new Django user when a new user logs in. Defaults to True.
-    'NEW_USER_PROFILE': {
-        'USER_GROUPS': [],  # The default group name when a new user logs in
-        'ACTIVE_STATUS': True,  # The default active status for new users
-        'STAFF_STATUS': True,  # The staff status for new users
-        'SUPERUSER_STATUS': False,  # The superuser status for new users
-    },
-    'ATTRIBUTES_MAP': {  # Change Email/UserName/FirstName/LastName to corresponding SAML2 userprofile attributes.
-        'email': 'Email',
-        'username': 'UserName',
-        'first_name': 'FirstName',
-        'last_name': 'LastName',
-    },
-    'TRIGGER': {
-        'CREATE_USER': 'path.to.your.new.user.hook.method',
-        'BEFORE_LOGIN': 'path.to.your.login.hook.method',
-    },
-    'ASSERTION_URL': 'https://embotelladora.herokuapp.com/', # Custom URL to validate incoming SAML requests against
-    'ENTITY_ID': ' https://embotelladora.herokuapp.com/saml2_auth/acs/', # Populates the Issuer element in authn request
-    'NAME_ID_FORMAT': None, # Sets the Format property of authn NameIDPolicy element
-    'USE_JWT': False, # Set this to True if you are running a Single Page Application (SPA) with Django Rest Framework (DRF), and are using JWT authentication to authorize client users
-    'FRONTEND_URL': 'https://myfrontendclient.com', # Redirect URL for the client if you are using JWT auth with DRF. See explanation below
-}
 
 # Password validation
 # https://docs.djangoproject.com/en/3.1/ref/settings/#auth-password-validators
@@ -147,6 +122,121 @@ AUTH_PASSWORD_VALIDATORS = [
 ]
 
 AUTH_USER_MODEL = 'users.User'
+# SAML
+AUTHENTICATION_BACKENDS = (
+    'django.contrib.auth.backends.ModelBackend',
+    'djangosaml2.backends.Saml2Backend',
+)
+
+SAML_CONFIG = {
+  # full path to the xmlsec1 binary programm
+  'xmlsec_binary': '/usr/bin/xmlsec1',
+
+  # your entity id, usually your subdomain plus the url to the metadata view
+  'entityid': 'https://embotelladora.herokuapp.com/saml2/metadata/',
+
+  # directory with attribute mapping
+  'attribute_map_dir': Path.join(BASE_DIR, 'attribute-maps'),
+
+  # this block states what services we provide
+  'service': {
+      # we are just a lonely SP
+      'sp' : {
+          'name': 'Federated Django sample SP',
+          'name_id_format': saml2.saml.NAMEID_FORMAT_PERSISTENT,
+
+          # For Okta add signed logout requets. Enable this:
+          # "logout_requests_signed": True,
+
+          'endpoints': {
+              # url and binding to the assetion consumer service view
+              # do not change the binding or service name
+              'assertion_consumer_service': [
+                  ('https://embotelladora.herokuapp.com/saml2/metadata/saml2/acs/',
+                   saml2.BINDING_HTTP_POST),
+                  ],
+              # url and binding to the single logout service view
+              # do not change the binding or service name
+              'single_logout_service': [
+                  # Disable next two lines for HTTP_REDIRECT for IDP's that only support HTTP_POST. Ex. Okta:
+                  ('https://embotelladora.herokuapp.com/saml2/metadata/saml2/acs/saml2/ls/',
+                   saml2.BINDING_HTTP_REDIRECT),
+                  ('https://embotelladora.herokuapp.com/saml2/metadata/saml2/acs/saml2/ls/post',
+                   saml2.BINDING_HTTP_POST),
+                  ],
+              },
+           # Mandates that the identity provider MUST authenticate the
+           # presenter directly rather than rely on a previous security context.
+          'force_authn': False,
+
+           # Enable AllowCreate in NameIDPolicy.
+          'name_id_format_allow_create': False,
+
+           # attributes that this project need to identify a user
+          'required_attributes': ['email'],
+
+           # attributes that may be useful to have but not required
+          'optional_attributes': ['nombres', 'apellidos'],
+
+          # in this section the list of IdPs we talk to are defined
+          # This is not mandatory! All the IdP available in the metadata will be considered.
+          'idp': {
+              # we do not need a WAYF service since there is
+              # only an IdP defined here. This IdP should be
+              # present in our metadata
+
+              # the keys of this dictionary are entity ids
+
+              },
+          },
+      },
+
+  # where the remote metadata is stored, local, remote or mdq server.
+  # One metadatastore or many ...
+  'metadata': {
+      'local': [],
+      'remote': [{"url": "https://grovity.my.salesforce.com/.well-known/samlidp.xml",
+                  "disable_ssl_certificate_validation": True},],
+      'mdq': []
+      },
+
+  # set to 1 to output debugging information
+  'debug': 1,
+
+  # Signing
+  'key_file': Path.join(BASE_DIR, 'private.key'),  # private part
+  'cert_file': Path.join(BASE_DIR, 'public.pem'),  # public part
+
+  # Encryption
+  'encryption_keypairs': [{
+      'key_file': Path.join(BASE_DIR, 'private.key'),  # private part
+      'cert_file': Path.join(BASE_DIR, 'public.pem'),  # public part
+  }],
+
+  # own metadata settings
+  'contact_person': [
+      {'given_name': 'Tony',
+       'sur_name': 'Tony',
+       'company': 'Grovity',
+       'email_address': 'jodmunozol@unal.edu.co',
+       'contact_type': 'technical'},
+      ],
+  # you can set multilanguage information here
+  'organization': {
+      'name': [('Grovity', 'es'), ('Grovity', 'en')],
+      'display_name': [('Grovity', 'es'), ('Grovity', 'en')],
+      'url': [('https://www.grovity.co/', 'es'), ('https://www.grovity.co/', 'en')],
+      },
+  }
+SAML_DJANGO_USER_MAIN_ATTRIBUTE = 'email'
+SAML_CREATE_UNKNOWN_USER = True
+ACS_DEFAULT_REDIRECT_URL = reverse_lazy('admin')
+SAML_ATTRIBUTE_MAPPING = {
+    'uid': ('username', ),
+    'mail': ('email', ),
+    'cn': ('nombres', ),
+    'sn': ('apellidos', ),
+}
 
 #Token auth
 REST_FRAMEWORK = {

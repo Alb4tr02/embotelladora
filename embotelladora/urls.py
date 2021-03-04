@@ -15,10 +15,9 @@ Including another URLconf
 """
 from django.urls import path, re_path, include
 from django.contrib import admin
-import django_saml2_auth.views
 
 urlpatterns = [
-    re_path('saml2_auth/', include('django_saml2_auth.urls')),
+    re_path(r'^saml2/', include('djangosaml2.urls')),
     path('admin/', admin.site.urls),
     re_path('user/', include('applications.users.urls')),
     re_path('cerveza/', include('applications.cerveza.urls')),
