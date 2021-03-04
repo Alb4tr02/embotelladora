@@ -152,7 +152,7 @@ SAML_CONFIG = {
               # url and binding to the assetion consumer service view
               # do not change the binding or service name
               'assertion_consumer_service': [
-                  ('https://embotelladora.herokuapp.com/saml2/metadata/saml2/acs/',
+                  ('https://embotelladora.herokuapp.com/saml2/acs/',
                    saml2.BINDING_HTTP_POST),
                   ],
               # url and binding to the single logout service view
@@ -194,10 +194,8 @@ SAML_CONFIG = {
   # where the remote metadata is stored, local, remote or mdq server.
   # One metadatastore or many ...
   'metadata': {
-      'local': [],
       'remote': [{"url": "https://grovity.my.salesforce.com/.well-known/samlidp.xml",
                   "disable_ssl_certificate_validation": True},],
-      'mdq': []
       },
 
   # set to 1 to output debugging information
