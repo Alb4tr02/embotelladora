@@ -122,21 +122,24 @@ AUTH_PASSWORD_VALIDATORS = [
 ]
 
 AUTH_USER_MODEL = 'users.User'
+
+LOGIN_URL = '/saml2/login/'
 # SAML
 AUTHENTICATION_BACKENDS = (
     'django.contrib.auth.backends.ModelBackend',
     'djangosaml2.backends.Saml2Backend',
 )
-
+print('***************************///////////////////************************')
+print(BASE_DIR.child('private.key'))
 SAML_CONFIG = {
   # full path to the xmlsec1 binary programm
   'xmlsec_binary': '/usr/bin/xmlsec1',
 
   # your entity id, usually your subdomain plus the url to the metadata view
-  'entityid': 'https://embotelladora.herokuapp.com/saml2/metadata/',
+  'entityid': 'http://localhost:8000/saml2/metadata/',
 
   # directory with attribute mapping
-  'attribute_map_dir': Path.join(BASE_DIR, 'attribute-maps'),
+  'attribute_map_dir': BASE_DIR.child('attribute-maps'),
 
   # this block states what services we provide
   'service': {
@@ -144,7 +147,7 @@ SAML_CONFIG = {
       'sp' : {
           'name': 'Federated Django sample SP',
           'name_id_format': saml2.saml.NAMEID_FORMAT_PERSISTENT,
-
+          'allow_unsolicited': True,
           # For Okta add signed logout requets. Enable this:
           # "logout_requests_signed": True,
 
@@ -152,17 +155,17 @@ SAML_CONFIG = {
               # url and binding to the assetion consumer service view
               # do not change the binding or service name
               'assertion_consumer_service': [
-                  ('https://embotelladora.herokuapp.com/saml2/acs/',
+                  ('http://localhost:8000/saml2/acs/',
                    saml2.BINDING_HTTP_POST),
                   ],
               # url and binding to the single logout service view
               # do not change the binding or service name
               'single_logout_service': [
                   # Disable next two lines for HTTP_REDIRECT for IDP's that only support HTTP_POST. Ex. Okta:
-                  ('https://embotelladora.herokuapp.com/saml2/metadata/saml2/acs/saml2/ls/',
-                   saml2.BINDING_HTTP_REDIRECT),
-                  ('https://embotelladora.herokuapp.com/saml2/metadata/saml2/acs/saml2/ls/post',
-                   saml2.BINDING_HTTP_POST),
+                  #('https://embotelladora.herokuapp.com/saml2/metadata/saml2/acs/saml2/ls/',
+                  # saml2.BINDING_HTTP_REDIRECT),
+                  #('https://embotelladora.herokuapp.com/saml2/metadata/saml2/acs/saml2/ls/post',
+                  # saml2.BINDING_HTTP_POST),
                   ],
               },
            # Mandates that the identity provider MUST authenticate the
@@ -170,13 +173,13 @@ SAML_CONFIG = {
           'force_authn': False,
 
            # Enable AllowCreate in NameIDPolicy.
-          'name_id_format_allow_create': False,
+          'name_id_format_allow_create': True,
 
            # attributes that this project need to identify a user
           'required_attributes': ['email'],
 
            # attributes that may be useful to have but not required
-          'optional_attributes': ['nombres', 'apellidos'],
+          'optional_attributes': ['email', 'nombres', 'apellidos'],
 
           # in this section the list of IdPs we talk to are defined
           # This is not mandatory! All the IdP available in the metadata will be considered.
@@ -184,7 +187,14 @@ SAML_CONFIG = {
               # we do not need a WAYF service since there is
               # only an IdP defined here. This IdP should be
               # present in our metadata
-
+                'https://grovity.my.salesforce.com': {
+                  'single_sign_on_service': {
+                      saml2.BINDING_HTTP_REDIRECT: 'https://grovity.my.salesforce.com/idp/endpoint/HttpRedirect',
+                      },
+                  'single_logout_service': {
+                      saml2.BINDING_HTTP_REDIRECT: 'https://grovity.my.salesforce.com/secur/logout.jsp',
+                      },
+                  },
               # the keys of this dictionary are entity ids
 
               },
@@ -193,22 +203,25 @@ SAML_CONFIG = {
 
   # where the remote metadata is stored, local, remote or mdq server.
   # One metadatastore or many ...
+
   'metadata': {
+      'local': [BASE_DIR.child('SAMLIdP-00D5Y000001cuS1.xml')],
       'remote': [{"url": "https://grovity.my.salesforce.com/.well-known/samlidp.xml",
-                  "disable_ssl_certificate_validation": True},],
+                  "disable_ssl_certificate_validation": False},],
+      'mdq': []
       },
 
   # set to 1 to output debugging information
   'debug': 1,
-
+  'allow_unknown_attributes': True,
   # Signing
-  'key_file': Path.join(BASE_DIR, 'private.key'),  # private part
-  'cert_file': Path.join(BASE_DIR, 'public.pem'),  # public part
+  'key_file': BASE_DIR.child('private.key'),  # private part
+  'cert_file': BASE_DIR.child('public.pem'),  # public part
 
   # Encryption
   'encryption_keypairs': [{
-      'key_file': Path.join(BASE_DIR, 'private.key'),  # private part
-      'cert_file': Path.join(BASE_DIR, 'public.pem'),  # public part
+      'key_file': '/home/tony/Embebidos/embotelladora/embotelladora/private.key',  # private part
+      'cert_file': '/home/tony/Embebidos/embotelladora/embotelladora/public.pem',  # public part
   }],
 
   # own metadata settings
@@ -223,7 +236,7 @@ SAML_CONFIG = {
   'organization': {
       'name': [('Grovity', 'es'), ('Grovity', 'en')],
       'display_name': [('Grovity', 'es'), ('Grovity', 'en')],
-      'url': [('https://www.grovity.co/', 'es'), ('https://www.grovity.co/', 'en')],
+      'url': [('https://e9696452ae83.ngrok.io', 'es'), ('https://e9696452ae83.ngrok.io', 'en')],
       },
   }
 SAML_DJANGO_USER_MAIN_ATTRIBUTE = 'email'

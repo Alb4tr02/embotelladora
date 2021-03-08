@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?><md:EntityDescriptor xmlns:md="urn:oasis:names:tc:SAML:2.0:metadata" entityID="https://grovity.my.salesforce.com" validUntil="2031-03-04T17:15:07.818Z" xmlns:ds="http://www.w3.org/2000/09/xmldsig#">
+   <md:IDPSSODescriptor protocolSupportEnumeration="urn:oasis:names:tc:SAML:2.0:protocol">
+      <md:KeyDescriptor use="signing">
+         <ds:KeyInfo>
+            <ds:X509Data>
+               <ds:X509Certificate>MIIErDCCA5SgAwIBAgIOAXf+H/cbAAAAAF84WYMwDQYJKoZIhvcNAQELBQAwgZAxKDAmBgNVBAMMH1NlbGZTaWduZWRDZXJ0XzA0TWFyMjAyMV8xNjQ0MDMxGDAWBgNVBAsMDzAwRDVZMDAwMDAxY3VTMTEXMBUGA1UECgwOU2FsZXNmb3JjZS5jb20xFjAUBgNVBAcMDVNhbiBGcmFuY2lzY28xCzAJBgNVBAgMAkNBMQwwCgYDVQQGEwNVU0EwHhcNMjEwMzA0MTY0NDAzWhcNMjIwMzA0MTIwMDAwWjCBkDEoMCYGA1UEAwwfU2VsZlNpZ25lZENlcnRfMDRNYXIyMDIxXzE2NDQwMzEYMBYGA1UECwwPMDBENVkwMDAwMDFjdVMxMRcwFQYDVQQKDA5TYWxlc2ZvcmNlLmNvbTEWMBQGA1UEBwwNU2FuIEZyYW5jaXNjbzELMAkGA1UECAwCQ0ExDDAKBgNVBAYTA1VTQTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAIs76Z4ZVN/bPjm350gfdMWQObdj8ls/eeYxso0l6BRpJICKS6FhVhPJyqJcv8o1xHLZxqu5c2gOqIJeaeJsiu0jGP+XeNKnBrB66bZZ5MoUy1SDw+WTCBO90nBZ7mCOmybVx8corcuKOMmsWt6XJrOazkLGfKm3iyuoePSSPQ+EFqhx2J7ezGCR4S8QCO8VHREcGyUr/N69l9JO5083Syry9slaSa9/2/vCTcinQvYdNOJ4KOizovLLOPF1cB5qa3J3MH0WYSMn0UvesyJOD/Nsxh3w4dHBFSfcfLYdz87Gl6lWAQ7Uo6cm5yNOa4zPWtU6/bPDzE7nlAvDdNcrs5sCAwEAAaOCAQAwgf0wHQYDVR0OBBYEFNXGYocNHKY1ufrSjj1/wkY7q3mwMA8GA1UdEwEB/wQFMAMBAf8wgcoGA1UdIwSBwjCBv4AU1cZihw0cpjW5+tKOPX/CRjurebChgZakgZMwgZAxKDAmBgNVBAMMH1NlbGZTaWduZWRDZXJ0XzA0TWFyMjAyMV8xNjQ0MDMxGDAWBgNVBAsMDzAwRDVZMDAwMDAxY3VTMTEXMBUGA1UECgwOU2FsZXNmb3JjZS5jb20xFjAUBgNVBAcMDVNhbiBGcmFuY2lzY28xCzAJBgNVBAgMAkNBMQwwCgYDVQQGEwNVU0GCDgF3/h/3GwAAAABfOFmDMA0GCSqGSIb3DQEBCwUAA4IBAQAJMXNYGnNvTJgtyg6QT+MwUWNzHC2m38M9M3gy/3ZKZxIsAaFeknKgL2ETytixFMtAPaD2jGIHDFKz5PZAuP0Y+Kgn9NbgfpRI7/vsQ2LgeuJJS5WTE0IbtiA9EUCWKG8AZkoRxqRUOtDK565YSH2VWVPuGxeANKngJzdAGAlDgY/VyMTXWFF29IU+lQIBEEcN7V1tknQqr4RA51JtBrtYBpfnsRwuib+HZBoXDL1Y6d7+51G+9sTe/ineoqwV4XrEZBRNNG2wMI2zyNpeN/6caG/zEng+Dv1a3z2JRCMfThwOGYckm0te1BQF72NTZ3EVsJUN9qBpCT3pjt9vdM39</ds:X509Certificate>
+            </ds:X509Data>
+         </ds:KeyInfo>
+      </md:KeyDescriptor>
+      <md:SingleLogoutService Binding="urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST" Location="https://grovity.my.salesforce.com/services/auth/idp/saml2/logout"/>
+      <md:SingleLogoutService Binding="urn:oasis:names:tc:SAML:2.0:bindings:HTTP-Redirect" Location="https://grovity.my.salesforce.com/services/auth/idp/saml2/logout"/>
+      <md:NameIDFormat>urn:oasis:names:tc:SAML:1.1:nameid-format:unspecified</md:NameIDFormat>
+      <md:SingleSignOnService Binding="urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST" Location="https://grovity.my.salesforce.com/idp/endpoint/HttpPost"/>
+      <md:SingleSignOnService Binding="urn:oasis:names:tc:SAML:2.0:bindings:HTTP-Redirect" Location="https://grovity.my.salesforce.com/idp/endpoint/HttpRedirect"/>
+   </md:IDPSSODescriptor>
+</md:EntityDescriptor>
